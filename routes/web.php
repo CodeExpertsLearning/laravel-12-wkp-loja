@@ -8,7 +8,18 @@ Route::get('/', function () {
 
 Route::get('/hello/{product:slug}', [\App\Http\Controllers\HelloController::class, 'hello']);
 
-Route::prefix('manager')->name('manager.')->group(function () {
+
+Route::view('login', 'auth.login')->name('login');
+
+Route::get('logout', function () {
+
+    auth()->logout();
+    return redirect()->route('login');
+})->name('logout');
+
+Route::post('login', \App\Http\Controllers\Auth\LoginControllerAction::class)->name('login.store');
+
+Route::prefix('manager')->middleware('auth')->name('manager.')->group(function () {
 
     // Route::prefix('products')
     //     ->name('products.')

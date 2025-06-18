@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -17,9 +18,11 @@ class ProductController extends Controller
         return view('manager.products.index', compact('products'));
     }
 
-    public function create()
+    public function create(Category $category)
     {
-        return view('manager.products.create');
+        $categories = $category->get(['id', 'name']);
+
+        return view('manager.products.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -36,7 +39,9 @@ class ProductController extends Controller
 
         // $product->save(); // insert into...
 
-        $this->model->create($request->all());
+        $product = $this->model->create($request->all());
+
+        if (count($request->categories)) $product->categories()->sync($request->categories);
 
         return redirect()->route('manager.products.index');
     }
@@ -46,11 +51,12 @@ class ProductController extends Controller
         return redirect()->route('manager.products.edit', $product);
     }
 
-    public function edit($product)
+    public function edit($product, Category $category)
     {
         $product = $this->model->findOrFail($product); //null ->exception: 404
+        $categories = $category->get(['id', 'name']);
 
-        return view('manager.products.edit', compact('product'));
+        return view('manager.products.edit', compact('product', 'categories'));
     }
 
     public function update($product, Request $request)
@@ -69,6 +75,8 @@ class ProductController extends Controller
 
         $product = $this->model->findOrFail($product);
         $product->update($request->all());
+
+        $product->categories()->sync($request->categories);
 
         return redirect()->back();
     }

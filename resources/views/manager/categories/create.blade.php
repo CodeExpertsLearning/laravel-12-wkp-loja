@@ -1,14 +1,22 @@
-<div>
+@extends('layouts.app')
 
-    <form action="{{ route('manager.categories.store') }}" method="POST">
-        @csrf
+@section('title')
+    Cadastrar Categorias
+@endsection
 
-        <div>
-            <label for="">Categoria</label>
-            <input type="text" name="name">
-        </div>
+@section('body')
+    <div>
 
-        <button>Cadastrar</button>
-    </form>
+        <form action="{{ route('manager.categories.store') }}" method="POST">
+            @csrf
 
-</div>
+            <div>
+                <label for="">Categoria</label>
+                <input type="text" name="name">
+            </div>
+
+            <button>Cadastrar</button>
+        </form>
+
+    </div>
+@endsection
