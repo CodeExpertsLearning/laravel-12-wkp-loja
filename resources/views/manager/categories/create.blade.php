@@ -5,17 +5,19 @@
 @endsection
 
 @section('body')
-    <div>
+    <div class="w-full">
 
         <form action="{{ route('manager.categories.store') }}" method="POST">
             @csrf
 
-            <div>
-                <label for="">Categoria</label>
-                <input type="text" name="name">
+            <div class="w-full mb-6">
+                <label for="" class="block">Categoria</label>
+                <input type="text" name="name" class="w-full p-2 rounded border border-gray-800">
             </div>
 
-            <button>Cadastrar</button>
+            <button
+                class="px-4 py-2 rounded border border-green-900 bg-green-700
+                           text-white hover:bg-green-900 transition duration-300 ease-in-out cursor-pointer">Cadastrar</button>
         </form>
 
     </div>
