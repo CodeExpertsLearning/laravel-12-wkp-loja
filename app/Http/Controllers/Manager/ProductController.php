@@ -3,12 +3,17 @@
 namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProductRequest;
 use App\Models\Category;
 use App\Models\Product;
+use App\Traits\UploadFiles;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
+    use UploadFiles;
+
     public function __construct(private Product $model) {}
 
     public function index()
@@ -25,23 +30,18 @@ class ProductController extends Controller
         return view('manager.products.create', compact('categories'));
     }
 
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
-        //Active Record
-        // $product = $this->model;
-        // $product->name = $request->name;
-        // $product->description = $request->description;
-        // $product->body = $request->body;
-        // $product->slug = $request->slug;
-        // $product->price = $request->price;
-        // $product->in_stock = $request->in_stock;
-        // $product->status   = $request->status;
+        //Storage::disk('public')->delete('products/juHqIB5ojdE9gqkmgsTSpsoTbQBfhFQsgJCgBIBJ.jpg');
 
-        // $product->save(); // insert into...
-
-        $product = $this->model->create($request->all());
+        $product = $this->model->create($request->validated());
 
         if (count($request->categories)) $product->categories()->sync($request->categories);
+
+        if ($request->photos) {
+            $photos = $this->uploadMultiple($request->photos, 'products', 'photo');
+            $product->photos()->createMany($photos);
+        }
 
         return redirect()->route('manager.products.index');
     }
@@ -59,24 +59,18 @@ class ProductController extends Controller
         return view('manager.products.edit', compact('product', 'categories'));
     }
 
-    public function update($product, Request $request)
+    public function update($product, ProductRequest $request)
     {
-        //Active Record: Update
-        // $product = $this->model->findOrFail($product);
-        // $product->name = $request->name;
-        // $product->description = $request->description;
-        // $product->body = $request->body;
-        // $product->slug = $request->slug;
-        // $product->price = $request->price;
-        // $product->in_stock = $request->in_stock;
-        // $product->status   = $request->status;
-
-        // $product->save(); // update ...
-
         $product = $this->model->findOrFail($product);
-        $product->update($request->all());
+        $product->update($request->validated());
 
         $product->categories()->sync($request->categories);
+
+        if ($request->photos) {
+            $photos = $this->uploadMultiple($request->photos, 'products/', 'photo');
+
+            $product->photos()->createMany($photos);
+        }
 
         return redirect()->back();
     }
