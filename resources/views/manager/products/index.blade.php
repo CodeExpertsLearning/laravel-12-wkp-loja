@@ -22,7 +22,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($products as $product)
+                @forelse ($products as $product)
                     <tr class="border-b border-gray-400">
                         <td class="px-6 py-4 text-left">{{ $product->id }}</td>
                         <td class="px-6 py-4 text-left w-[60%]">{{ $product->name }}</td>
@@ -30,7 +30,7 @@
                         <td class="px-6 py-4 text-left flex gap-x-2">
                             <a href="{{ route('manager.products.edit', ['product' => $product->id]) }}"
                                 class="px-4 py-2 rounded border border-blue-900 bg-blue-700
-                           text-white hover:bg-blue-900 transition duration-300 ease-in-out cursor-pointer">Editar</a>
+                            text-white hover:bg-blue-900 transition duration-300 ease-in-out cursor-pointer">Editar</a>
 
                             <form action="{{ route('manager.products.destroy', ['product' => $product->id]) }}"
                                 method="POST">
@@ -38,11 +38,15 @@
                                 @method('DELETE')
                                 <button
                                     class="px-4 py-2 rounded border border-red-900 bg-red-700
-                           text-white hover:bg-red-900 transition duration-300 ease-in-out cursor-pointer">Apagar</button>
+                            text-white hover:bg-red-900 transition duration-300 ease-in-out cursor-pointer">Apagar</button>
                             </form>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="4">Nenhum produto encontrado...</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
         {{ $products->links() }}

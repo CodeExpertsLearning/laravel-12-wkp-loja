@@ -2,8 +2,16 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', [\App\Http\Controllers\Site\HomeController::class, 'index'])
+    ->name('site.home');
+Route::get('/products/{product:slug}', [\App\Http\Controllers\Site\HomeController::class, 'single'])
+    ->name('site.single');
+
+Route::prefix('cart')->name('site.cart.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Site\CartController::class, 'index'])->name('index');
+    Route::post('/add', [\App\Http\Controllers\Site\CartController::class, 'add'])->name('add');
+    Route::delete('/remove/{item}', [\App\Http\Controllers\Site\CartController::class, 'remove'])->name('remove');
+    Route::get('/cancel', [\App\Http\Controllers\Site\CartController::class, 'cancel'])->name('cancel');
 });
 
 Route::get('/hello/{product:slug}', [\App\Http\Controllers\HelloController::class, 'hello']);
@@ -19,7 +27,7 @@ Route::get('logout', function () {
 
 Route::post('login', \App\Http\Controllers\Auth\LoginControllerAction::class)->name('login.store');
 
-Route::prefix('manager')->middleware('auth')->name('manager.')->group(function () {
+Route::prefix('manager')->middleware(['auth', 'can:can_access_manager'])->name('manager.')->group(function () {
 
     Route::delete(
         '/products/{product}/photos/{photo}',
