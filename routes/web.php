@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [\App\Http\Controllers\Site\HomeController::class, 'index'])
@@ -14,18 +15,27 @@ Route::prefix('cart')->name('site.cart.')->group(function () {
     Route::get('/cancel', [\App\Http\Controllers\Site\CartController::class, 'cancel'])->name('cancel');
 });
 
-Route::get('/hello/{product:slug}', [\App\Http\Controllers\HelloController::class, 'hello']);
-
+Route::prefix('checkout')->name('site.checkout.')->middleware('auth')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Site\CheckoutController::class, 'index'])->name('index');
+    Route::post('/process', [\App\Http\Controllers\Site\CheckoutController::class, 'process'])->name('process');
+    Route::get('/thanks/{order}',  [\App\Http\Controllers\Site\CheckoutController::class, 'thanks'])->name('thanks');
+});
 
 Route::view('login', 'auth.login')->name('login');
-
-Route::get('logout', function () {
+Route::view('register', 'auth.register')->name('register');
+Route::post('logout', function (Request $request) {
 
     auth()->logout();
+
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
     return redirect()->route('login');
 })->name('logout');
 
 Route::post('login', \App\Http\Controllers\Auth\LoginControllerAction::class)->name('login.store');
+Route::post('register', \App\Http\Controllers\Auth\RegisterController::class)
+    ->name('register.store');
 
 Route::prefix('manager')->middleware(['auth', 'can:can_access_manager'])->name('manager.')->group(function () {
 
@@ -36,4 +46,12 @@ Route::prefix('manager')->middleware(['auth', 'can:can_access_manager'])->name('
 
     Route::resource('products', \App\Http\Controllers\Manager\ProductController::class);
     Route::resource('categories', \App\Http\Controllers\Manager\CategoryController::class);
+});
+
+Route::middleware('auth')->prefix('customers')->name('site.customers.')->group(function () {
+    Route::get('my-orders', [\App\Http\Controllers\Customer\MyOrdersController::class, 'index'])->name('my-orders');
+
+    Route::put('my-orders/cancel/{order}', [\App\Http\Controllers\Customer\MyOrdersController::class, 'cancelOrder'])
+        ->can('update', 'order')
+        ->name('my-orders.cancel');
 });

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class LoginControllerAction extends Controller
 {
@@ -13,9 +14,14 @@ class LoginControllerAction extends Controller
         $credentials = request()->only(['email', 'password']);
 
         if (!auth()->attempt($credentials, request()->remember)) {
-            abort(401);
+
+            throw ValidationException::withMessages([
+                'email' => 'Credenciais inválidas!'
+            ]);
         }
 
-        return redirect()->route('manager.products.index');
+        request()->session()->regenerate();
+
+        return redirect()->intended(route('manager.products.index', absolute: false));
     }
 }

@@ -14,7 +14,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(
+            \App\Services\Payments\PaymentInterface::class,
+            \App\Services\Payments\HappyPayment::class
+        );
     }
 
     /**

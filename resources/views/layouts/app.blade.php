@@ -17,14 +17,22 @@
         </a>
 
         <nav>
-            <ul class="flex">
-                <li class="px-6 py-4">
+            <ul class="flex justify-around">
+                <li class="py-4">
                     <a href="{{ route('manager.products.index') }}"
                         class="text-white px-6 py-4 @if (request()->routeIs('manager.products*')) bg-purple-800 @endif hover:bg-purple-800 transition ease-in-out duration-300">Produtos</a>
                 </li>
-                <li class="px-6 py-4">
+                <li class="py-4">
                     <a href="{{ route('manager.categories.index') }}"
                         class="text-white px-6 py-4 @if (request()->routeIs('manager.categories*')) bg-purple-800 @endif hover:bg-purple-800 transition ease-in-out duration-300">Categorias</a>
+                </li>
+
+                <li class="py-4">
+                    <form action="{{ route('logout') }}" method="POST" id="logout">
+                        @csrf
+                    </form>
+                    <a href="#" onclick="document.querySelector('form#logout').submit()"
+                        class="text-white px-6 py-4 hover:bg-red-800 transition ease-in-out duration-300">Sair</a>
                 </li>
             </ul>
         </nav>

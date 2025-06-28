@@ -54,7 +54,8 @@
                 <div class="w-full py-8 mt-10 flex justify-around gap-5 text-white">
                     <a href="{{ route('site.cart.cancel') }}"
                         class="px-5 py-2 rounded text-white text-2xl font-bold bg-red-600">Cancelar</a>
-                    <a href="" class="px-5 py-2 rounded text-white text-2xl font-bold bg-green-600">Continuar</a>
+                    <a href="{{ route('site.checkout.index') }}"
+                        class="px-5 py-2 rounded text-white text-2xl font-bold bg-green-600">Continuar</a>
                 </div>
             @else
                 <h3 class="w-full text-center text-white text-4xl font-thin py-4">Nenhum item no seu carrinho de compras!

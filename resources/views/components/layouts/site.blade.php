@@ -20,6 +20,12 @@
                     <li><a href="{{ route('site.home') }}"
                             class="text-white  hover:underline hover:font-bold transition duration-300 ease-in-out @if (request()->routeIs('site.home')) font-bold @else font-thin @endif">Home</a>
                     </li>
+
+                    <li><a href="{{ route('site.customers.my-orders') }}"
+                            class="text-white  hover:underline hover:font-bold transition duration-300 ease-in-out @if (request()->routeIs('site.home')) font-bold @else font-thin @endif">Meus
+                            Pedidos</a>
+                    </li>
+
                     <li class="relative">
                         <a href="{{ route('site.cart.index') }}"
                             class="flex gap-x-2 items-center text-white  hover:underline hover:font-bold transition duration-300 ease-in-out @if (request()->routeIs('site.home')) font-bold @else font-thin @endif">
